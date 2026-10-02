@@ -1,0 +1,20 @@
+const FACETS = ["country", "domain", "lifecycle_stage", "risk_level", "core_tension"];
+const LABELS = {country:"Country",domain:"Domain",lifecycle_stage:"Lifecycle stage",risk_level:"Risk level",core_tension:"Core ethical tension"};
+const ALL_LABELS = {country:"countries",domain:"domains",lifecycle_stage:"lifecycle stages",risk_level:"risk levels",core_tension:"core ethical tensions"};
+let cases = [], filters = {};
+const search = document.querySelector("#search"), filtersEl = document.querySelector("#facet-filters"), list = document.querySelector("#case-list"), count = document.querySelector("#result-count"), active = document.querySelector("#active-filters"), template = document.querySelector("#case-template");
+const label = value => value.replaceAll("_", " ").replace(/\b\w/g, c => c.toUpperCase());
+
+function textFor(item) { return [item.title,item.domain,item.scenario,item.ethical_issues,item.long_description,...Object.values(item.facets)].join(" ").toLowerCase(); }
+function selected() { const query=search.value.trim().toLowerCase(); return cases.filter(item => (!query || textFor(item).includes(query)) && FACETS.every(key => !filters[key] || item.facets[key] === filters[key])); }
+function render() {
+  const matches=selected(); list.replaceChildren(); count.textContent=`${matches.length} ${matches.length===1?"case":"cases"} found`;
+  active.replaceChildren(); Object.entries(filters).filter(([,v])=>v).forEach(([key,value])=>{const chip=document.createElement("span");chip.className="chip";chip.textContent=`${LABELS[key]}: ${value}`;active.append(chip)});
+  matches.forEach(item=>{const node=template.content.cloneNode(true);node.querySelector(".case-number").textContent=`Case ${item.case_id}`;const risk=node.querySelector(".risk");risk.textContent=item.facets.risk_level;risk.classList.add(item.facets.risk_level.toLowerCase());node.querySelector("h2").textContent=item.title;node.querySelector(".summary").textContent=item.scenario;node.querySelector(".long-description").textContent=item.long_description;const meta=node.querySelector(".case-meta");["country","domain","ai_system","lifecycle_stage","affected_groups","core_tension"].forEach(key=>{const pair=document.createElement("div"),dt=document.createElement("dt"),dd=document.createElement("dd");dt.textContent=`${label(key)}:`;dd.textContent=item.facets[key];pair.append(dt,dd);meta.append(pair)});list.append(node)});
+  if(!matches.length){const empty=document.createElement("p");empty.textContent="No cases match these filters. Try clearing one or more selections.";list.append(empty)}
+}
+function makeFilters(){FACETS.forEach(key=>{const field=document.createElement("fieldset"),legend=document.createElement("legend"),select=document.createElement("select"),all=document.createElement("option");field.className="facet-group";legend.textContent=LABELS[key];select.name=key;all.value="";all.textContent=`All ${ALL_LABELS[key]}`;select.append(all);[...new Set(cases.map(x=>x.facets[key]))].sort().forEach(value=>{const option=document.createElement("option");option.value=value;option.textContent=value;select.append(option)});select.addEventListener("change",()=>{filters[key]=select.value;render()});field.append(legend,select);filtersEl.append(field)})}
+document.querySelector("#reset").addEventListener("click",()=>{filters={};search.value="";filtersEl.querySelectorAll("select").forEach(x=>x.value="");render()});
+search.addEventListener("input",render);
+document.querySelector("#random-case").addEventListener("click",()=>{const match=selected();if(!match.length)return;const item=match[Math.floor(Math.random()*match.length)];const cards=[...list.querySelectorAll(".case-card")];const card=cards.find(x=>x.querySelector(".case-number").textContent===`Case ${item.case_id}`);card?.scrollIntoView({behavior:"smooth",block:"center"});card?.querySelector("details").setAttribute("open","")});
+fetch("cases.json").then(r=>r.ok?r.json():Promise.reject(new Error("Could not load case data."))).then(data=>{cases=data;makeFilters();render()}).catch(error=>{count.textContent=error.message});

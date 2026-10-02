@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Browse difficult fictional ethical cases around AI.">
+  <title>AI Ethics Case Library</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#results">Skip to cases</a>
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">A fictional teaching collection</p>
+      <h1>AI Ethics Case Library</h1>
+      <p class="lede">Twenty difficult cases spanning the development and use of artificial intelligence. Search the narratives or combine facets to find a focused set for teaching, discussion, or research.</p>
+    </div>
+  </header>
+  <main class="wrap layout">
+    <aside class="filters" aria-label="Case filters">
+      <div class="filter-heading"><h2>Refine cases</h2><button id="reset" type="button">Reset all</button></div>
+      <label class="search-label" for="search">Search cases</label>
+      <input id="search" type="search" placeholder="e.g. privacy, hospital, children" autocomplete="off">
+      <p class="search-note">Searches titles, descriptions, and facets.</p>
+      <div id="facet-filters" class="facet-filters"></div>
+    </aside>
+    <section id="results" class="content" aria-live="polite">
+      <div class="result-bar"><p id="result-count"></p><button id="random-case" type="button">Show a random case</button></div>
+      <div id="active-filters" class="active-filters"></div>
+      <div id="case-list" class="case-list"></div>
+      <template id="case-template">
+        <article class="case-card">
+          <div class="case-topline"><span class="case-number"></span><span class="risk"></span></div>
+          <h2></h2>
+          <p class="summary"></p>
+          <dl class="case-meta"></dl>
+          <details><summary>Read the full case</summary><p class="long-description"></p></details>
+        </article>
+      </template>
+    </section>
+  </main>
+  <footer><div class="wrap">All countries, organizations, and situations are fictionalized for discussion.</div></footer>
+  <script src="app.js"></script>
+</body>
+</html>
