@@ -1,6 +1,6 @@
-const FACETS = ["country", "domain", "lifecycle_stage", "risk_level", "core_tension"];
-const LABELS = {country:"Country",domain:"Domain",lifecycle_stage:"Lifecycle stage",risk_level:"Risk level",core_tension:"Core ethical tension"};
-const ALL_LABELS = {country:"countries",domain:"domains",lifecycle_stage:"lifecycle stages",risk_level:"risk levels",core_tension:"core ethical tensions"};
+const FACETS = ["region", "sector", "ai_stage", "risk_level", "ethical_theme"];
+const LABELS = {region:"Region",sector:"Sector",ai_stage:"AI stage",risk_level:"Risk level",ethical_theme:"Ethical theme"};
+const ALL_LABELS = {region:"regions",sector:"sectors",ai_stage:"AI stages",risk_level:"risk levels",ethical_theme:"ethical themes"};
 let cases = [], filters = {};
 const search = document.querySelector("#search"), filtersEl = document.querySelector("#facet-filters"), list = document.querySelector("#case-list"), count = document.querySelector("#result-count"), active = document.querySelector("#active-filters"), template = document.querySelector("#case-template");
 const label = value => value.replaceAll("_", " ").replace(/\b\w/g, c => c.toUpperCase());
