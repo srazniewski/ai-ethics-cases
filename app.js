@@ -1,6 +1,7 @@
 const FACETS = ["region", "sector", "ai_stage", "risk_level", "ethical_theme"];
 const LABELS = {region:"Region",sector:"Sector",ai_stage:"AI stage",risk_level:"Risk level",ethical_theme:"Ethical theme"};
 const ALL_LABELS = {region:"regions",sector:"sectors",ai_stage:"AI stages",risk_level:"risk levels",ethical_theme:"ethical themes"};
+const CASE_DATA_URL = "cases.json?v=grouped-facets-v1";
 let cases = [], filters = {};
 const search = document.querySelector("#search"), filtersEl = document.querySelector("#facet-filters"), list = document.querySelector("#case-list"), count = document.querySelector("#result-count"), active = document.querySelector("#active-filters"), template = document.querySelector("#case-template");
 const label = value => value.replaceAll("_", " ").replace(/\b\w/g, c => c.toUpperCase());
@@ -19,5 +20,5 @@ function makeFilters(){FACETS.forEach(key=>{const field=document.createElement("
 document.querySelector("#reset").addEventListener("click",()=>{filters={};search.value="";filtersEl.querySelectorAll("select").forEach(x=>x.value="");render()});
 search.addEventListener("input",render);
 document.querySelector("#random-case").addEventListener("click",()=>{const match=selected();if(!match.length)return;const item=match[Math.floor(Math.random()*match.length)];const cards=[...list.querySelectorAll(".case-card")];const card=cards.find(x=>x.querySelector(".case-number").textContent===`Case ${item.case_id}`);card?.scrollIntoView({behavior:"smooth",block:"center"});card?.querySelector("details").setAttribute("open","")});
-fetch("cases.json").then(r=>r.ok?r.json():Promise.reject(new Error("Could not load case data."))).then(data=>{cases=data;makeFilters();render()}).catch(error=>{count.textContent=error.message});
+fetch(CASE_DATA_URL).then(r=>r.ok?r.json():Promise.reject(new Error("Could not load case data."))).then(data=>{cases=data;makeFilters();render()}).catch(error=>{count.textContent=error.message});
 
